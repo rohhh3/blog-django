@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
-from .models import CustomUser
+from .models import CustomUser, Post
+from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password
-
 # Create your views here.
 def home(request):
-    return render(request, 'blog/home.html')
+    posts = Post.objects.all().order_by('datePosted')
+    return render(request, 'blog/home.html', {'posts': posts})
 
 def register(request):
     if request.method == 'POST':

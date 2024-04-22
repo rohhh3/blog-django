@@ -35,12 +35,12 @@ class Category(models.Model):
 class Post(models.Model):
     isPublic = models.BooleanField(default=True)
     title = models.CharField(max_length=200)
-    content = models.TextField()
+    content = models.TextField(max_length=1000)
     datePosted = models.DateTimeField(default=timezone.now)
     thumbnail = models.ImageField(upload_to='files/thumbnails', null=True)
 
     author = models.ForeignKey(CustomUser, on_delete=models.PROTECT) 
-    comments = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True) 
+    comments = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True) 
     categories = models.ManyToManyField(Category) 
 
     def __str__(self):
