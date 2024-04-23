@@ -17,15 +17,6 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
-class Comment(models.Model):
-    datePosted = models.DateTimeField(default=timezone.now)
-    content = models.TextField()
-
-    author = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
-
-    def __str__(self):
-        return self.author
-    
 class Category(models.Model):
     name = models.CharField(max_length=200)
 
@@ -37,12 +28,20 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField(max_length=1000)
     datePosted = models.DateTimeField(default=timezone.now)
-    thumbnail = models.ImageField(upload_to='files/thumbnails', null=True)
+    thumbnail = models.ImageField(upload_to='files/thumbnails', null=True, blank=True)
 
     author = models.ForeignKey(CustomUser, on_delete=models.PROTECT) 
-    comments = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True) 
-    categories = models.ManyToManyField(Category) 
+    categories = models.ManyToManyField("Category", related_name="posts") 
 
     def __str__(self):
         return self.title
+    
+class Comment(models.Model):
+    author = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
+    content = models.TextField()
+    datePosted = models.DateTimeField(default=timezone.now)
+    post = models.ForeignKey("Post", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.author} on '{self.post}'"
         
