@@ -1,18 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <h2> {{ post.title }} </h2>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block page_title %}
+    <h2>{{ post.title }}</h2>
+{% endblock page_title %}
+
+{% block page_content %}
     <small>
-        {{ post.datePosted }}
+        {{ post.datePosted }} | Categories:
         {% for category in post.categories.all %}
             <a href="{% url 'post_category' category.name %}">
-            {{ category.name }}
+                {{ category.name }}
             </a>
         {% endfor %}
     </small>
-    <p> {{ post.content }}</p>
-</body>
-</html>
+    <p>{{ post.content }}</p>
+
+    <h3>Comment</h3>
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            {{ form.author }}
+        </div>
+        <div>
+            {{ form.content }}
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <h3>Comments:</h3>
+    {% for comment in comments %}
+    <p>
+        On {{ comment.datePosted }} <b>{{ comment.author }}</b> wrote:
+    </p>
+    <p>
+        {{ comment.content }}
+    </p>
+    {% endfor %}
+{% endblock page_content %}

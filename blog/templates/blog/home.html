@@ -1,23 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Blog App</title>
-  </head>
-  <body>
-    <h1>Articles List</h1>
-    <div class="posts">
-      {% for post in posts %}
-      <div class="post">
-        <h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
-        <p>{{ post.datePosted }}</p>
-        {% for category in post.categories.all %}
-            <a href="{% url 'post_category' category.name %}">
-            {{ category.name }}
-            </a>
+{% extends "base.html" %}
+
+{% block page_title %}
+  <h2>Posts</h2>
+{% endblock page_title %}
+
+{% block page_content %}
+    {% block posts %}
+        {% for post in posts %}
+            <h3><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h3>
+            <small>
+                {{ post.datePosted }} | Categories:
+                {% for category in post.categories.all %}
+                    <a href="{% url 'post_category' category.name %}">
+                        {{ category.name }}
+                    </a>
+                {% endfor %}
+            </small>
         {% endfor %}
-      </div>
-      {% endfor %}
-    </div>
-  </body>
-</html>
+    {% endblock posts %}
+{% endblock page_content %}

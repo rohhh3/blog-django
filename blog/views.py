@@ -1,6 +1,9 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from .models import CustomUser, Post, Comment
 from django.http import HttpResponse
+from blog.forms import CommentForm
+from .forms import PostForm
 from django.contrib.auth.hashers import make_password
 # Create your views here.
 def home(request):
@@ -13,8 +16,37 @@ def post_category(request, category):
 
 def post_detail(request, pk):
     post = Post.objects.get(pk=pk)
+    form = CommentForm()
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = Comment(
+                author=request.user,
+                content=form.cleaned_data["content"],
+                post=post,
+            )
+            comment.save()
+            return HttpResponseRedirect(request.path_info)
+
     comments = Comment.objects.filter(post=post)
-    return render(request, "blog/detail.html", {'post': post, 'comments': comments})
+    context = {
+        "post": post,
+        "comments": comments,
+        "form": CommentForm(),
+    }
+    return render(request, "blog/detail.html", context)
+
+def post_new(request):
+    if request.method == "POST":
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = PostForm()
+    return render(request, 'blog/add_post.html', {'form': form})
 
 def register(request):
     if request.method == 'POST':

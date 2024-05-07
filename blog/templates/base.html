@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Blog</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+</head>
+    <body>
+    <h1>Blog</h1>
+        <a href="{% url "blog-home" %}">Home</a>
+        <a href="{% url "post_new" %}" class="top-menu">Create Post</a>
+            <hr>
+                {% block page_title %}{% endblock page_title %}
+                {% block page_content %}{% endblock page_content %}
+            </hr>
+    </body>
+</html>
