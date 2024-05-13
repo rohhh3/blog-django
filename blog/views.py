@@ -5,6 +5,9 @@ from django.http import HttpResponse
 from blog.forms import CommentForm
 from .forms import PostForm
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login, logout
+
 # Create your views here.
 def home(request):
     posts = Post.objects.all().order_by('datePosted')
@@ -63,3 +66,36 @@ def register(request):
         return redirect('blog-home')
     else:
         return render(request, 'blog/register.html')
+    
+# def login(request):
+#     if request.method == 'POST':
+#         form = AuthenticationForm(request, data=request.POST)
+#         if form.is_valid():
+#             email = request.POST.get('email')
+#             password = request.POST.get('password')
+#             user = authenticate(email=email, password=password)
+#             if user is not None:
+#                 login(request, user)
+#                 return redirect('blog-home')  
+#         else: 
+#             return render(request, 'blog/login.html', {'form': form})
+#     else:
+#         form = AuthenticationForm()
+#         return render(request, 'blog/login.html', {'form': form})
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        print(username)
+        print(password)
+        print(request)
+        print(user)
+
+        if user is not None:
+            login(request, user)
+            print("logged in")
+            return redirect('blog-home') 
+    context = {}
+    return render(request, 'blog/login.html', context)
