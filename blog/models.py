@@ -28,7 +28,7 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField(max_length=1000)
     datePosted = models.DateTimeField(default=timezone.now)
-    thumbnail = models.ImageField(upload_to='files/thumbnails', null=True, blank=True)
+    thumbnail = models.ImageField(upload_to='images/thumbnails/', null=True, blank=True)
 
     author = models.ForeignKey(CustomUser, on_delete=models.PROTECT) 
     categories = models.ManyToManyField("Category", related_name="posts") 

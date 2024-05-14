@@ -18,4 +18,4 @@ class CommentForm(forms.Form):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ('isPublic', 'title', 'content')
+        fields = ('isPublic', 'title', 'content', 'categories', 'thumbnail')
