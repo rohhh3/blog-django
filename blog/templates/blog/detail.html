@@ -6,13 +6,18 @@
 
 {% block page_content %}
     <small>
-        {{ post.datePosted }} | Categories:
+        <p> Wrote by: {{ post.author }}</p>
+        {{ post.datePosted }} <br/> Categories:
         {% for category in post.categories.all %}
             <a href="{% url 'post_category' category.name %}">
                 {{ category.name }}
             </a>
         {% endfor %}
+        <br/>
     </small>
+    {% if post.thumbnail %}
+    <img src="{{ post.thumbnail.url }}">
+    {% endif %}
     <p>{{ post.content }}</p>
 
     <h3>Comment</h3>
