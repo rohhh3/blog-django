@@ -2,8 +2,24 @@ from django.contrib import admin
 from .models import Post, Comment, Category, CustomUser
 
 # Register your models here.
-admin.site.register(Comment)
-admin.site.register(CustomUser)
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('content', 'author', 'post', 'datePosted')
+    list_filter = ('datePosted', )
+    ordering = ('datePosted', )
+    search_fields = ('author', 'content', 'post')
+    fields = (('author', 'post'), 'content','datePosted')
+
+@admin.register(CustomUser)
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ('username', 'email','first_name', 'last_name', 
+                    'date_joined', 'last_login')
+    list_filter = ('is_active', 'is_staff', 'last_login', 'date_joined')
+    ordering = ('date_joined',)
+    search_fields = ('username', 'email', 'first_name', 'last_name')
+    fields = (('email','username', 'password'), ('first_name', 'last_name'),
+              'status',('is_staff','is_superuser', 'is_active'), 'avatar','description', 
+              ('groups', 'user_permissions'))
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
