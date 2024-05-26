@@ -18,14 +18,14 @@ class CustomUser(AbstractUser):
         return self.username
 
 class Category(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=32, unique=True)
 
     def __str__(self):
             return self.name
     
 class Post(models.Model):
     isPublic = models.BooleanField(default=True)
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, unique=True)
     content = models.TextField(max_length=1000)
     datePosted = models.DateTimeField(default=timezone.now)
     thumbnail = models.ImageField(upload_to='images/thumbnails/', null=True, blank=True)

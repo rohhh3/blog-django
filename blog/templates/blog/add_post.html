@@ -1,18 +1,14 @@
-{% extends "base.html" %} 
-{% block title %} Creating new blog post {% endblock %}
-
+{% extends "base.html" %} {% block title %} Creating new blog post {% endblock%}
 {% block page_content %}
 <h2>New post</h2>
-<div class=""form-group>
+<div class="form-group">
   <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-  
+    {% csrf_token %} {{ form.as_p }}
+
     <button type="submit" class="save btn btn-secondary">Save</button>
   </form>
 </div>
 
 {% if post.thumbnail %}
-  <img src="{{ post.thumbnail.url }}">
-{% endif %}
-{% endblock %}
+<img src="{{ post.thumbnail.url }}" />
+{% endif %} {% endblock %}

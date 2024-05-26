@@ -43,10 +43,14 @@ def post_new(request):
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
+            print('got POST and form is valid')
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            form.save_m2m() 
             return redirect('post_detail', pk=post.pk)
+        print('got POST but form is invalid')
+        print(form.errors)
     else:
         form = PostForm()
     return render(request, 'blog/add_post.html', {'form': form})
@@ -56,13 +60,11 @@ def register(request):
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        hashed_password = make_password(password)  # Hash the password
+        hashed_password = make_password(password)  
 
-        # Create and save the user
         user = CustomUser.objects.create(username=username, email=email, password=hashed_password)
         user.save()
         
-        # Redirect to a success page or any other page
         return redirect('blog-home')
     else:
         return render(request, 'blog/register.html')

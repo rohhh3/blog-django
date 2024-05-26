@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Post
+from .models import Post, Category
 
 class CommentForm(forms.Form):
     content = forms.CharField(
@@ -10,6 +10,11 @@ class CommentForm(forms.Form):
     )
 
 class PostForm(forms.ModelForm):
+    categories = forms.ModelMultipleChoiceField(
+        queryset=Category.objects.all(),
+        widget=forms.CheckboxSelectMultiple, 
+        required=True  
+    )
     class Meta:
         model = Post
         fields = ('isPublic', 'title', 'content', 'categories', 'thumbnail')
@@ -17,5 +22,5 @@ class PostForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={'class': 'form-control'}),
-            'categories': forms.Select(attrs={'class': 'form-control'}),
+            'thumbnail': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
