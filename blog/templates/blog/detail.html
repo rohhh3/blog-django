@@ -18,7 +18,7 @@
     {% if post.thumbnail %}
     <img src="{{ post.thumbnail.url }}">
     {% endif %}
-    <p>{{ post.content }}</p>
+    <p>{{ post.content|safe }}</p>
 
     <h3>Comment</h3>
     <form method="post">

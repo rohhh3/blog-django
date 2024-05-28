@@ -3,7 +3,9 @@
 <h2>New post</h2>
 <div class="form-group">
   <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %} {{ form.as_p }}
+    {% csrf_token %}
+    {{ form.media }}
+    {{ form.as_p }}
 
     <button type="submit" class="save btn btn-secondary">Save</button>
   </form>

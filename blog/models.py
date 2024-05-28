@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
+from ckeditor.fields import RichTextField
 
 # Create your models here.
 class CustomUser(AbstractUser):
@@ -26,7 +27,8 @@ class Category(models.Model):
 class Post(models.Model):
     isPublic = models.BooleanField(default=True)
     title = models.CharField(max_length=200, unique=True)
-    content = models.TextField(max_length=1000)
+    content = RichTextField(blank=True, null=True, max_length=1000)
+    #content = models.TextField(max_length=1000)
     datePosted = models.DateTimeField(default=timezone.now)
     thumbnail = models.ImageField(upload_to='images/thumbnails/', null=True, blank=True)
 
