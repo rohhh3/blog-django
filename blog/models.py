@@ -34,6 +34,7 @@ class Post(models.Model):
 
     author = models.ForeignKey(CustomUser, on_delete=models.PROTECT) 
     categories = models.ManyToManyField("Category", related_name="posts") 
+    password = models.CharField(max_length=128, blank=True, null=True)
 
     def __str__(self):
         return self.title

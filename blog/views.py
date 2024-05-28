@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser, Post, Comment
 from django.http import HttpResponse
 from blog.forms import CommentForm
@@ -18,9 +18,23 @@ def post_category(request, category):
     return render(request, "blog/category.html", {'category': category, 'posts': posts})
 
 def post_detail(request, pk):
-    post = Post.objects.get(pk=pk)
+    post = get_object_or_404(Post, pk=pk)
+    comments = Comment.objects.filter(post=post)
     form = CommentForm()
-    if request.method == "POST":
+
+    if not post.isPublic:
+        if request.method == 'POST' and 'password' in request.POST:
+            entered_password = request.POST.get('password')
+            if entered_password == post.password:
+                request.session['unlocked_post'] = pk
+            else:
+                error_message = "Incorrect password"
+                return render(request, 'blog/password_prompt.html', {'post': post, 'error_message': error_message})
+
+        if request.session.get('unlocked_post') != pk:
+            return render(request, 'blog/password_prompt.html', {'post': post})
+
+    if request.method == 'POST' and 'content' in request.POST:
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = Comment(
@@ -31,11 +45,10 @@ def post_detail(request, pk):
             comment.save()
             return HttpResponseRedirect(request.path_info)
 
-    comments = Comment.objects.filter(post=post)
     context = {
         "post": post,
         "comments": comments,
-        "form": CommentForm(),
+        "form": form,
     }
     return render(request, "blog/detail.html", context)
 
