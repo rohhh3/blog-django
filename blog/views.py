@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser, Post, Comment
 from django.http import HttpResponse
 from blog.forms import CommentForm
-from .forms import PostForm
+from .forms import PostForm, RegistrationForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
@@ -70,34 +70,16 @@ def post_new(request):
 
 def register(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        hashed_password = make_password(password)  
-
-        user = CustomUser.objects.create(username=username, email=email, password=hashed_password)
-        user.save()
-        
-        return redirect('blog-home')
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.password = make_password(form.cleaned_data['password'])
+            user.save()
+            return redirect('blog-home')
     else:
-        return render(request, 'blog/register.html')
+        form = RegistrationForm()
+    return render(request, 'blog/register.html', {'form': form})
     
-# def login(request):
-#     if request.method == 'POST':
-#         form = AuthenticationForm(request, data=request.POST)
-#         if form.is_valid():
-#             email = request.POST.get('email')
-#             password = request.POST.get('password')
-#             user = authenticate(email=email, password=password)
-#             if user is not None:
-#                 login(request, user)
-#                 return redirect('blog-home')  
-#         else: 
-#             return render(request, 'blog/login.html', {'form': form})
-#     else:
-#         form = AuthenticationForm()
-#         return render(request, 'blog/login.html', {'form': form})
-
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
