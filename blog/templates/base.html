@@ -10,29 +10,7 @@
     <title>Blog</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="{% url "blog-home" %}">Blog</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="{% url "post_new" %}">Create Post</a>
-            </li>
-          </ul>
-          <form class="form-inline my-2 my-lg-0">
-            {% if user.is_authenticated %}
-              <span class="navbar-text text-white mr-3">{{ user.email }}</span>
-              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-            {% else %}
-              <a class="nav-link" href="{% url "blog-login" %}">Login</a>
-              <a class="nav-link" href="{% url "blog-register" %}">Sign up</a>
-            {% endif %}
-          </form>
-        </div>
-      </nav>
+    {% include 'navbar.html' %}
       {% if messages %}
         {% for message in messages %}
           <div class="alert alert-warning alert-dismissible fade show" role="alert">
