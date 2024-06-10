@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post, Comment
 from blog.forms import CommentForm
 from .forms import PostForm, RegistrationForm
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -51,6 +52,7 @@ def post_detail(request, pk):
     }
     return render(request, "blog/detail.html", context)
 
+@login_required
 def post_new(request):
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES)
