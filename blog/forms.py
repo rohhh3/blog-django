@@ -5,12 +5,14 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserChangeForm
 
+form_control_widget = forms.TextInput(attrs={'class': 'form-control'})
+
 class UpdateUserForm(UserChangeForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    email = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), max_length=128)
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), max_length=128)
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), max_length=512)
+    username = forms.CharField(widget=form_control_widget)
+    email = forms.CharField(widget=form_control_widget)
+    first_name = forms.CharField(widget=form_control_widget, max_length=128)
+    last_name = forms.CharField(widget=form_control_widget, max_length=128)
+    last_name = forms.CharField(widget=form_control_widget, max_length=512)
     password = None
 
     class Meta:
@@ -22,7 +24,7 @@ class UpdateUserForm(UserChangeForm):
 
 class RegistrationForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(widget=form_control_widget)
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), min_length=8, label="Password")
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), label="Confirm Password")
 
@@ -44,7 +46,7 @@ class RegistrationForm(forms.ModelForm):
         return confirm_password
     
 class LoginForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(widget=form_control_widget)
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     def clean(self):
@@ -77,7 +79,7 @@ class PostForm(forms.ModelForm):
         fields = ('isPublic', 'title', 'content', 'categories', 'thumbnail', 'password')
 
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'title': form_control_widget,
             'content': forms.Textarea(attrs={'class': 'form-control'}),
             'thumbnail': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
