@@ -12,12 +12,12 @@ class UpdateUserForm(UserChangeForm):
     email = forms.CharField(widget=form_control_widget)
     first_name = forms.CharField(widget=form_control_widget, max_length=128)
     last_name = forms.CharField(widget=form_control_widget, max_length=128)
-    last_name = forms.CharField(widget=form_control_widget, max_length=512)
+    description = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}), max_length=512)
     password = None
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'username', 'first_name', 'last_name']
+        fields = ['email', 'username', 'first_name', 'last_name', 'description']
 
     def __init__(self, *args: Any, **kwargs: Any):
         super(UpdateUserForm, self).__init__(*args, **kwargs)
