@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post, Comment
 from blog.forms import CommentForm
-from .forms import PostForm, RegistrationForm
+from .forms import PostForm, RegistrationForm, LoginForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login, logout
@@ -83,25 +83,20 @@ def register(request):
     
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        print(username)
-        print(password)
-        print(request)
-        print(user)
-
-        if user is not None:
-            login(request, user)
-            print("logged in")
-            messages.success(request, ("Logged in succesfully"))
-            return redirect('blog-home') 
-        else:
-            messages.success(request, ("Error, try again"))
-            return redirect('blog-login') 
-        
-    context = {}
-    return render(request, 'blog/login.html', context)
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, "Logged in successfully")
+                return redirect('blog-home')
+            else:
+                messages.error(request, "Invalid username or password")
+    else:
+        form = LoginForm()
+    return render(request, 'blog/login.html', {'form': form})
 
 def user_logout(request):
     logout(request)

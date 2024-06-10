@@ -1,6 +1,7 @@
 from django import forms
 from .models import Post, Category, CustomUser
 from django.core.exceptions import ValidationError
+from django.contrib.auth import authenticate
 
 
 class RegistrationForm(forms.ModelForm):
@@ -25,6 +26,22 @@ class RegistrationForm(forms.ModelForm):
         if confirm_password and password and confirm_password != password:
             raise ValidationError("Passwords do not match.")
         return confirm_password
+    
+class LoginForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get("username")
+        password = cleaned_data.get("password")
+
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if user is None:
+                raise ValidationError("Invalid username or password")
+        return cleaned_data
+
     
 class CommentForm(forms.Form):
     content = forms.CharField(
