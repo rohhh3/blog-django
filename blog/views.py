@@ -1,8 +1,8 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post, Comment
+from .models import Post, Comment, CustomUser
 from blog.forms import CommentForm
-from .forms import PostForm, RegistrationForm, LoginForm
+from .forms import PostForm, RegistrationForm, LoginForm, UpdateUserForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login, logout
@@ -102,3 +102,16 @@ def user_logout(request):
     logout(request)
     messages.success(request, ("Logged out succesfully"))
     return redirect('blog-home')
+
+@login_required
+def update_user(request):
+    current_user = CustomUser.objects.get(id=request.user.id)
+    user_form = UpdateUserForm(request.POST or None, instance=current_user)
+
+    if user_form.is_valid():
+        user_form.save()
+        login(request, current_user)
+        messages.success(request, "User has been updated")
+        return redirect('blog-home')
+
+    return render(request, 'blog/update_user.html', {'user_form': user_form})

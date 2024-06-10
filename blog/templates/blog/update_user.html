@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block title %} Update user profile {% endblock%}
+{% block page_content %}
+<h2>Hi, {{ user.username }}</h2>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Update User</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ user_form.as_p }}
+                        <button type="submit" class="btn btn-primary btn-block">
+                            Update
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
