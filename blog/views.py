@@ -1,12 +1,11 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import CustomUser, Post, Comment
-from django.http import HttpResponse
+from .models import Post, Comment
 from blog.forms import CommentForm
 from .forms import PostForm, RegistrationForm
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 # Create your views here.
 def home(request):
@@ -93,6 +92,16 @@ def user_login(request):
         if user is not None:
             login(request, user)
             print("logged in")
+            messages.success(request, ("Logged in succesfully"))
             return redirect('blog-home') 
+        else:
+            messages.success(request, ("Error, try again"))
+            return redirect('blog-login') 
+        
     context = {}
     return render(request, 'blog/login.html', context)
+
+def user_logout(request):
+    logout(request)
+    messages.success(request, ("Logged out succesfully"))
+    return redirect('blog-home')

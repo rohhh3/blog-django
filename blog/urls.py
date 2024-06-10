@@ -11,6 +11,7 @@ urlpatterns = [
     path("category/<category>/", views.post_category, name="post_category"),
     path('register', views.register, name='blog-register'),
     path('login', views.user_login, name='blog-login'),
+    path('logout', views.user_logout, name='logout'),
     path('post/new/', views.post_new, name='post_new'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
