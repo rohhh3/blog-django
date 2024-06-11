@@ -13,4 +13,28 @@
 
 {% if post.thumbnail %}
 <img src="{{ post.thumbnail.url }}" />
-{% endif %} {% endblock %}
+{% endif %} 
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const isPublicCheckbox = document.getElementById('isPublicCheckbox');
+    const passwordLabel = document.querySelector('label[for="passwordInput"]');
+    const passwordInput = document.getElementById('passwordInput');
+
+    togglePasswordInput();
+
+    isPublicCheckbox.addEventListener('change', function() {
+      togglePasswordInput();
+    });
+
+    function togglePasswordInput() {
+      if (isPublicCheckbox.checked) {
+        passwordLabel.style.display = 'none';
+        passwordInput.style.display = 'none';
+      } else {
+        passwordLabel.style.display = 'block';
+        passwordInput.style.display = 'block';
+      }
+    }
+  });
+</script>
+{% endblock %}

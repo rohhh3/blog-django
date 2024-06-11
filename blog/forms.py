@@ -91,9 +91,11 @@ class PostForm(forms.ModelForm):
     )
     class Meta:
         model = Post
-        fields = ('isPublic', 'title', 'content', 'categories', 'thumbnail', 'password')
+        fields = ('isPublic', 'password', 'title', 'content', 'categories', 'thumbnail')
 
         widgets = {
+            'isPublic': forms.CheckboxInput(attrs={'id': 'isPublicCheckbox'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control', 'id': 'passwordInput'}),
             'title': form_control_widget,
             'content': forms.Textarea(attrs={'class': 'form-control'}),
             'thumbnail': forms.ClearableFileInput(attrs={'class': 'form-control'}),
