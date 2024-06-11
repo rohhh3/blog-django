@@ -8,12 +8,13 @@
     {% block posts %}
         {% for post in posts %}
             <h3><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h3>
+            <p>Posted by: <a href="{% url 'user_profile' post.author.username %}">{{ post.author }}</a></p>
             <small>
                 {{ post.datePosted }} | Categories:
                 {% for category in post.categories.all %}
                     <a href="{% url 'post_category' category.name %}">
                         {{ category.name }}
-                    </a>
+                    </a><br/><br/>
                 {% endfor %}
             </small>
         {% endfor %}

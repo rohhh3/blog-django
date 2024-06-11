@@ -6,7 +6,7 @@
 
 {% block page_content %}
     <small>
-        <p> Wrote by: {{ post.author }}</p>
+        <p> Wrote by: <a href="{% url 'user_profile' post.author.username %}">{{ post.author }}</a></p>
         {{ post.datePosted }} <br/> Categories:
         {% for category in post.categories.all %}
             <a href="{% url 'post_category' category.name %}">
@@ -40,7 +40,7 @@
     <h3>Comments:</h3>
     {% for comment in comments %}
     <p>
-        On {{ comment.datePosted }} <b>{{ comment.author }}</b> wrote:
+        On {{ comment.datePosted }} <b><a href="{% url 'user_profile' comment.author.username %}">{{ comment.author }}</a></b> wrote:
     </p>
     <p>
         {{ comment.content }}

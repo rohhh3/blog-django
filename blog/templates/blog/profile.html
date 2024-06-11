@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} User Profile {% endblock %}
+
+{% block page_content %}
+<div class="container">
+    <h2>{{ profile_user.username }}'s Profile</h2>
+    <div class="row">
+        <div class="col-md-4">
+            {% if profile_user.avatar %}
+                <img src="{{ profile_user.avatar.url }}" alt="{{ profile_user.username }}'s avatar" class="img-fluid rounded-circle">
+            {% else %}
+                <img src="{% static 'media/images/avatars/default_avatar.jpg' %}" alt="Default avatar" class="img-fluid rounded-circle">
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <h5>Full name:</h5>
+            <p>{{ profile_user.first_name }} {{ profile_user.last_name }}</p>
+            <h5>Bio:</h5>
+            <p>{{ profile_user.description }}</p>
+        </div>
+    </div>
+    <h3>Posts</h3>
+    <ul>
+        {% for post in posts %}
+            <li>
+                <a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a>
+                <p>{{ post.datePosted }}</p>
+            </li>
+        {% empty %}
+            <li>No posts yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -13,7 +13,7 @@ class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     status = models.CharField(max_length=100, choices=STATUS, default='regular')
     description = models.TextField('Description', max_length=600, default='', blank=True)
-    avatar = models.CharField(max_length=100, blank=True)
+    avatar = models.ImageField(upload_to='images/avatars/', blank=True, null=True)
 
     def __str__(self):
         return self.username

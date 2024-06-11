@@ -13,6 +13,7 @@ class UpdateUserForm(UserChangeForm):
     first_name = forms.CharField(widget=form_control_widget, max_length=128)
     last_name = forms.CharField(widget=form_control_widget, max_length=128)
     description = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}), max_length=512)
+    avatar = forms.ImageField(widget=forms.ClearableFileInput(attrs={'class': 'form-control'}), required=False)
     password = None
 
     class Meta:

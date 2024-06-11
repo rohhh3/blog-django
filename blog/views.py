@@ -106,22 +106,33 @@ def user_logout(request):
 @login_required
 def update_user(request):
     current_user = CustomUser.objects.get(id=request.user.id)
-    user_form = UpdateUserForm(request.POST or None, instance=current_user)
+    user_form = UpdateUserForm(request.POST or None, request.FILES or None, instance=current_user)
     password_form = UpdateUserPasswordForm(user=request.user, data=request.POST or None)
 
     if request.method == 'POST':
         if user_form.is_valid() and password_form.is_valid():
-            user_form.save()
+            user = user_form.save(commit=False)
+            if 'avatar' in request.FILES:
+                user.avatar = request.FILES['avatar']
+            user.save()
             user = password_form.save()
             update_session_auth_hash(request, user)  # Important, to update the session with the new password
             messages.success(request, "User profile and password have been updated")
             return redirect('blog-home')
         elif user_form.is_valid():
-            user_form.save()
+            user = user_form.save(commit=False)
+            if 'avatar' in request.FILES:
+                user.avatar = request.FILES['avatar']
+            user.save()
             messages.success(request, "User profile has been updated")
             return redirect('blog-home')
 
     return render(request, 'blog/update_user.html', {'user_form': user_form, 'password_form': password_form})
+
+def user_profile(request, username):
+    user = get_object_or_404(CustomUser, username=username)
+    posts = Post.objects.filter(author=user).order_by('-datePosted')
+    return render(request, 'blog/profile.html', {'profile_user': user, 'posts': posts})
 
 @login_required
 def post_edit(request, pk):
