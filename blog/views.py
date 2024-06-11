@@ -107,20 +107,20 @@ def user_logout(request):
 def update_user(request):
     current_user = CustomUser.objects.get(id=request.user.id)
     user_form = UpdateUserForm(request.POST or None, instance=current_user)
-    password_form = UpdateUserPasswordForm(user=request.user, data=request.POST or None)
+    password_form = UpdateUserPasswordForm(request.user, request.POST or None)
 
     if request.method == 'POST':
-        if user_form.is_valid() and password_form.is_valid():
+        if user_form.is_valid():
             user_form.save()
-            user = password_form.save()
-            update_session_auth_hash(request, user)  # Important, to update the session with the new password
-            messages.success(request, "User profile and password have been updated")
-            return redirect('blog-home')
-        elif user_form.is_valid():
-            user_form.save()
-            messages.success(request, "User profile has been updated")
-            return redirect('blog-home')
+            messages.success(request, "User information has been updated")
+            return redirect('update_user')
 
+        if password_form.is_valid():
+            password_form.save()
+            update_session_auth_hash(request, password_form.user)
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('update_user')
+    
     return render(request, 'blog/update_user.html', {'user_form': user_form, 'password_form': password_form})
 
 @login_required
