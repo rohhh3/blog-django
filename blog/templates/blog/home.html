@@ -22,8 +22,6 @@
                             <div class="card my-2" style="width: 100%;">
                                 {% if post.thumbnail %}
                                     <img src="{{ post.thumbnail.url }}" class="card-img-top" alt="{{ post.title }}">
-                                {% else %}
-                                    <img src="{% static 'path/to/default/thumbnail.png' %}" class="card-img-top" alt="Default Thumbnail">
                                 {% endif %}
                         </a>
                             <div class="card-body d-flex flex-column">

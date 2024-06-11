@@ -4,6 +4,8 @@ from .models import Post, Category, CustomUser, Comment
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from django.utils.translation import gettext_lazy as _
+from django.core.files.images import get_image_dimensions
 
 form_control_widget = forms.TextInput(attrs={'class': 'form-control'})
 
@@ -84,11 +86,29 @@ class CommentForm(forms.ModelForm):
         }
 
 class PostForm(forms.ModelForm):
+    MAX_IMAGE_SIZE = 8 * 1024 * 1024 
+    MAX_IMAGE_DIMENSION = 2048 
+
     categories = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         widget=forms.CheckboxSelectMultiple, 
         required=True  
     )
+    def clean_thumbnail(self):
+        thumbnail = self.cleaned_data.get('thumbnail')
+        
+        if thumbnail:
+            if thumbnail.size > self.MAX_IMAGE_SIZE:
+                raise ValidationError(_('The image size should be less than 8MB.'))
+            
+            width, height = get_image_dimensions(thumbnail)
+            if width > self.MAX_IMAGE_DIMENSION or height > self.MAX_IMAGE_DIMENSION:
+                raise ValidationError(_('The image dimensions should be less than 2048x2048px.'))
+
+            return thumbnail
+        else:
+            return thumbnail
+        
     class Meta:
         model = Post
         fields = ('isPublic', 'password', 'title', 'content', 'categories', 'thumbnail')
