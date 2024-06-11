@@ -8,11 +8,11 @@ from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 form_control_widget = forms.TextInput(attrs={'class': 'form-control'})
 
 class UpdateUserForm(UserChangeForm):
-    username = forms.CharField(widget=form_control_widget)
-    email = forms.CharField(widget=form_control_widget)
-    first_name = forms.CharField(widget=form_control_widget, max_length=128)
-    last_name = forms.CharField(widget=form_control_widget, max_length=128)
-    description = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}), max_length=512)
+    username = forms.CharField(widget=form_control_widget, required=False)
+    email = forms.CharField(widget=form_control_widget, required=False)
+    first_name = forms.CharField(widget=form_control_widget, max_length=128, required=False)
+    last_name = forms.CharField(widget=form_control_widget, max_length=128, required=False)
+    description = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}), max_length=512, required=False)
     password = None
 
     class Meta:
