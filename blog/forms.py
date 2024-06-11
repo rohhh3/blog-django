@@ -1,6 +1,6 @@
 from typing import Any
 from django import forms
-from .models import Post, Category, CustomUser
+from .models import Post, Category, CustomUser, Comment
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
@@ -75,12 +75,13 @@ class LoginForm(forms.Form):
         return cleaned_data
 
     
-class CommentForm(forms.Form):
-    content = forms.CharField(
-        widget=forms.Textarea(
-            attrs={"class": "form-control", "placeholder": "Leave a comment!"}
-        )
-    )
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={"class": "form-control", "placeholder": "Leave a comment!"})
+        }
 
 class PostForm(forms.ModelForm):
     categories = forms.ModelMultipleChoiceField(

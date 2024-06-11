@@ -122,3 +122,64 @@ def update_user(request):
             return redirect('blog-home')
 
     return render(request, 'blog/update_user.html', {'user_form': user_form, 'password_form': password_form})
+
+@login_required
+def post_edit(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.user != post.author:
+        messages.error(request, "You are not authorized to edit this post.")
+        return redirect('post_detail', pk=pk)
+    
+    if request.method == "POST":
+        form = PostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Post has been updated.")
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = PostForm(instance=post)
+    return render(request, 'blog/edit_post.html', {'form': form})
+
+@login_required
+def post_delete(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.user != post.author:
+        messages.error(request, "You are not authorized to delete this post.")
+        return redirect('post_detail', pk=pk)
+    
+    if request.method == "POST":
+        post.delete()
+        messages.success(request, "Post has been deleted.")
+        return redirect('blog-home')
+    return render(request, 'blog/delete_post.html', {'post': post})
+
+@login_required
+def comment_edit(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    if request.user != comment.author:
+        messages.error(request, "You are not authorized to edit this comment.")
+        return redirect('post_detail', pk=comment.post.pk)
+
+    if request.method == "POST":
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Comment has been updated.")
+            return redirect('post_detail', pk=comment.post.pk)
+    else:
+        form = CommentForm(instance=comment)
+    return render(request, 'blog/edit_comment.html', {'form': form})
+
+@login_required
+def comment_delete(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    if request.user != comment.author:
+        messages.error(request, "You are not authorized to delete this comment.")
+        return redirect('post_detail', pk=comment.post.pk)
+
+    if request.method == "POST":
+        post_pk = comment.post.pk
+        comment.delete()
+        messages.success(request, "Comment has been deleted.")
+        return redirect('post_detail', pk=post_pk)
+    return render(request, 'blog/delete_comment.html', {'comment': comment})

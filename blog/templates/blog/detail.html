@@ -20,6 +20,11 @@
     {% endif %}
     <p>{{ post.content|safe }}</p>
 
+    {% if request.user == post.author %}
+        <a href="{% url 'post_edit' post.pk %}" class="btn btn-warning">Edit Post</a>
+        <a href="{% url 'post_delete' post.pk %}" class="btn btn-danger">Delete Post</a>
+    {% endif %}
+
     <h3>Comment</h3>
     <form method="post">
         {% csrf_token %}
@@ -40,5 +45,9 @@
     <p>
         {{ comment.content }}
     </p>
+    {% if request.user == comment.author %}
+        <a href="{% url 'comment_edit' comment.pk %}" class="btn btn-warning">Edit Comment</a>
+        <a href="{% url 'comment_delete' comment.pk %}" class="btn btn-danger">Delete Comment</a>
+    {% endif %}
     {% endfor %}
 {% endblock page_content %}
