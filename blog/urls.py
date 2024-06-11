@@ -14,5 +14,9 @@ urlpatterns = [
     path('logout', views.user_logout, name='logout'),
     path('post/new/', views.post_new, name='post_new'),
     path('update_user', views.update_user, name='update_user'),
+    path('post/<int:pk>/edit/', views.post_edit, name='post_edit'),
+    path('post/<int:pk>/delete/', views.post_delete, name='post_delete'),
+    path('comment/<int:pk>/edit/', views.comment_edit, name='comment_edit'),
+    path('comment/<int:pk>/delete/', views.comment_delete, name='comment_delete')
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
