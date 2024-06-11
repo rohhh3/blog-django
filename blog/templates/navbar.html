@@ -12,7 +12,7 @@
       </ul>
       <form class="form-inline my-2 my-lg-0">
         {% if user.is_authenticated %}
-          <span class="navbar-text text-white mr-3">{{ user.email }}</span>
+          <span class="navbar-text text-white mr-3">{{ user.username }}</span>
           <a class="nav-link" href="{% url 'logout' %}">Logout</a>
           <a class="nav-link" href="{% url 'update_user' %}">Profile</a>
         {% else %}
