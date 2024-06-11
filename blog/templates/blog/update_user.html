@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block title %} Update user profile {% endblock%}
+{% extends "base.html" %} 
+{% block title %} Update user profile {% endblock %}
 {% block page_content %}
 <h2>Hi, {{ user.username }}</h2>
 <div class="container">
@@ -12,6 +13,8 @@
                     <form method="POST">
                         {% csrf_token %}
                         {{ user_form.as_p }}
+                        <h4>Change Password</h4>
+                        {{ password_form.as_p }}
                         <button type="submit" class="btn btn-primary btn-block">
                             Update
                         </button>
@@ -21,5 +24,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}

@@ -2,10 +2,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post, Comment, CustomUser
 from blog.forms import CommentForm
-from .forms import PostForm, RegistrationForm, LoginForm, UpdateUserForm
+from .forms import PostForm, RegistrationForm, LoginForm, UpdateUserForm, UpdateUserPasswordForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 
 # Create your views here.
@@ -107,11 +107,18 @@ def user_logout(request):
 def update_user(request):
     current_user = CustomUser.objects.get(id=request.user.id)
     user_form = UpdateUserForm(request.POST or None, instance=current_user)
+    password_form = UpdateUserPasswordForm(user=request.user, data=request.POST or None)
 
-    if user_form.is_valid():
-        user_form.save()
-        login(request, current_user)
-        messages.success(request, "User has been updated")
-        return redirect('blog-home')
+    if request.method == 'POST':
+        if user_form.is_valid() and password_form.is_valid():
+            user_form.save()
+            user = password_form.save()
+            update_session_auth_hash(request, user)  # Important, to update the session with the new password
+            messages.success(request, "User profile and password have been updated")
+            return redirect('blog-home')
+        elif user_form.is_valid():
+            user_form.save()
+            messages.success(request, "User profile has been updated")
+            return redirect('blog-home')
 
-    return render(request, 'blog/update_user.html', {'user_form': user_form})
+    return render(request, 'blog/update_user.html', {'user_form': user_form, 'password_form': password_form})

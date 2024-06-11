@@ -3,7 +3,7 @@ from django import forms
 from .models import Post, Category, CustomUser
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
-from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 
 form_control_widget = forms.TextInput(attrs={'class': 'form-control'})
 
@@ -21,6 +21,20 @@ class UpdateUserForm(UserChangeForm):
 
     def __init__(self, *args: Any, **kwargs: Any):
         super(UpdateUserForm, self).__init__(*args, **kwargs)
+    
+class UpdateUserPasswordForm(PasswordChangeForm):
+    old_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label="Old Password"
+    )
+    new_password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label="New Password"
+    )
+    new_password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label="Confirm New Password"
+    )
 
 class RegistrationForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
