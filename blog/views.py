@@ -127,6 +127,12 @@ def update_user(request):
             messages.success(request, "User profile has been updated")
             return redirect('blog-home')
 
+        if password_form.is_valid():
+            password_form.save()
+            update_session_auth_hash(request, password_form.user)
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('update_user')
+    
     return render(request, 'blog/update_user.html', {'user_form': user_form, 'password_form': password_form})
 
 def user_profile(request, username):
