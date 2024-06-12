@@ -66,6 +66,7 @@ def post_new(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            form.save_m2m() 
             return redirect('post_detail', pk=post.pk)
         print('got POST but form is invalid')
         print(form.errors)
