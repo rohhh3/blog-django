@@ -148,11 +148,16 @@ def post_edit(request, pk):
         messages.error(request, "You are not authorized to edit this post.")
         return redirect('post_detail', pk=pk)
     
+    old_thumbnail = post.thumbnail.path if post.thumbnail else None
+
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
-            if form.cleaned_data['thumbnail'] is None and post.thumbnail:
-                default_storage.delete(post.thumbnail.path)
+            if not request.FILES.get('thumbnail') and 'thumbnail-clear' in request.POST and old_thumbnail:
+                default_storage.delete(old_thumbnail)
+            elif request.FILES.get('thumbnail') and old_thumbnail:
+                default_storage.delete(old_thumbnail)
+                
             form.save()
             messages.success(request, "Post has been updated.")
             return redirect('post_detail', pk=post.pk)
