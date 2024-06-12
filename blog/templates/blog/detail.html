@@ -1,53 +1,72 @@
 {% extends "base.html" %}
 
 {% block page_title %}
-    <h2>{{ post.title }}</h2>
+<div class="container mt-5">
+    <h2 class="text-center">{{ post.title }}</h2>
+</div>
 {% endblock page_title %}
 
 {% block page_content %}
-    <small>
-        <p> Wrote by: <a href="{% url 'user_profile' post.author.username %}">{{ post.author }}</a></p>
-        {{ post.datePosted }} <br/> Categories:
-        {% for category in post.categories.all %}
-            <a href="{% url 'post_category' category.name %}">
-                {{ category.name }}
-            </a>
-        {% endfor %}
-        <br/>
-    </small>
-    {% if post.thumbnail %}
-    <img src="{{ post.thumbnail.url }}">
-    {% endif %}
-    <p>{{ post.content|safe }}</p>
-
-    {% if request.user == post.author %}
-        <a href="{% url 'post_edit' post.pk %}" class="btn btn-warning">Edit Post</a>
-        <a href="{% url 'post_delete' post.pk %}" class="btn btn-danger">Delete Post</a>
-    {% endif %}
-
-    <h3>Comment</h3>
-    <form method="post">
-        {% csrf_token %}
-        <div>
-            {{ form.author }}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card border-3 mb-4">
+                <div class="card-body">
+                    <small class="text-muted">
+                        <p>Written by: <a href="{% url 'user_profile' post.author.username %}">{{ post.author }}</a></p>
+                        {{ post.datePosted }} <br> Categories:
+                        {% for category in post.categories.all %}
+                            <a href="{% url 'post_category' category.name %}">
+                                {{ category.name }}
+                            </a>{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    </small>
+                    {% if post.thumbnail %}
+                        <div class="text-center my-3">
+                            <img src="{{ post.thumbnail.url }}" class="img-fluid img-thumbnail" alt="Post Thumbnail">
+                        </div>
+                    {% endif %}
+                    <p>{{ post.content|safe }}</p>
+                    
+                    {% if request.user == post.author %}
+                        <a href="{% url 'post_edit' post.pk %}" class="btn btn-warning">Edit Post</a>
+                        <a href="{% url 'post_delete' post.pk %}" class="btn btn-danger">Delete Post</a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>Leave a Comment</h3>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="contentInput">Comment</label>
+                            <textarea class="form-control" id="contentInput" name="content" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h3>Comments:</h3>
+                    {% for comment in comments %}
+                        <div class="border-bottom mb-3 pb-2">
+                            <p>
+                                On {{ comment.datePosted }} <b><a href="{% url 'user_profile' comment.author.username %}">{{ comment.author }}</a></b> wrote:
+                            </p>
+                            <p>{{ comment.content }}</p>
+                            {% if request.user == comment.author %}
+                                <a href="{% url 'comment_edit' comment.pk %}" class="btn btn-warning btn-sm">Edit Comment</a>
+                                <a href="{% url 'comment_delete' comment.pk %}" class="btn btn-danger btn-sm">Delete Comment</a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-        <div>
-            {{ form.content }}
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-
-    <h3>Comments:</h3>
-    {% for comment in comments %}
-    <p>
-        On {{ comment.datePosted }} <b><a href="{% url 'user_profile' comment.author.username %}">{{ comment.author }}</a></b> wrote:
-    </p>
-    <p>
-        {{ comment.content }}
-    </p>
-    {% if request.user == comment.author %}
-        <a href="{% url 'comment_edit' comment.pk %}" class="btn btn-warning">Edit Comment</a>
-        <a href="{% url 'comment_delete' comment.pk %}" class="btn btn-danger">Delete Comment</a>
-    {% endif %}
-    {% endfor %}
+    </div>
+</div>
 {% endblock page_content %}

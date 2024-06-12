@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
+from django.core.files.storage import default_storage
 
 # Create your views here.
 def home(request):
@@ -116,7 +117,7 @@ def update_user(request):
                 user.avatar = request.FILES['avatar']
             user.save()
             user = password_form.save()
-            update_session_auth_hash(request, user)  # Important, to update the session with the new password
+            update_session_auth_hash(request, user)
             messages.success(request, "User profile and password have been updated")
             return redirect('blog-home')
         elif user_form.is_valid():
@@ -132,7 +133,7 @@ def update_user(request):
             update_session_auth_hash(request, password_form.user)
             messages.success(request, 'Your password was successfully updated!')
             return redirect('update_user')
-    
+
     return render(request, 'blog/update_user.html', {'user_form': user_form, 'password_form': password_form})
 
 def user_profile(request, username):
@@ -150,6 +151,8 @@ def post_edit(request, pk):
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
+            if form.cleaned_data['thumbnail'] is None and post.thumbnail:
+                default_storage.delete(post.thumbnail.path)
             form.save()
             messages.success(request, "Post has been updated.")
             return redirect('post_detail', pk=post.pk)
