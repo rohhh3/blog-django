@@ -18,6 +18,17 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+    def save(self, *args, **kwargs):
+        try:
+            old_avatar = CustomUser.objects.get(id=self.id).avatar
+        except CustomUser.DoesNotExist:
+            old_avatar = None
+
+        super().save(*args, **kwargs)
+
+        if old_avatar and old_avatar != self.avatar:
+            default_storage.delete(old_avatar.path)
 
 class Category(models.Model):
     name = models.CharField(max_length=32, unique=True)
