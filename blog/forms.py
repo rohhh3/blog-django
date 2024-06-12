@@ -10,10 +10,10 @@ from django.core.files.images import get_image_dimensions
 form_control_widget = forms.TextInput(attrs={'class': 'form-control'})
 
 class UpdateUserForm(UserChangeForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}), required=False)
+    username = forms.CharField(widget=form_control_widget, required=False)
     email = forms.CharField(widget=forms.EmailInput(attrs={"class": "form-control"}), required=False)
-    first_name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}), max_length=128, required=False)
-    last_name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}), max_length=128, required=False)
+    first_name = forms.CharField(widget=form_control_widget, max_length=128, required=False)
+    last_name = forms.CharField(widget=form_control_widget, max_length=128, required=False)
     description = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}), max_length=512, required=False)
     avatar = forms.ImageField(required=False, widget=forms.FileInput(attrs={"class": "form-control-file"}))
     password = None
