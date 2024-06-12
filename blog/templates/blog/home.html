@@ -34,7 +34,7 @@
                                     {% endfor %}
                                 </small>
                                 <h5 class="card-title">{{ post.title }}</h5>
-                                <p class="card-text">{{ post.content|truncatewords:20|safe }}</p>
+                                <p class="card-text">{{ post.content|truncatechars_html:20|safe }}</p>
                                 <a href="{% url 'post_detail' post.pk %}" class="btn btn-primary mt-auto">Read more</a>
                             </div>
                         </div>

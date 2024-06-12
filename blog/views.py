@@ -33,7 +33,11 @@ def post_detail(request, pk):
                 return render(request, 'blog/password_prompt.html', {'post': post, 'error_message': error_message})
 
         if request.session.get('unlocked_post') != pk:
-            return render(request, 'blog/password_prompt.html', {'post': post})
+            if request.user == post.author:
+                
+                request.session['unlocked_post'] = pk
+            else:
+                return render(request, 'blog/password_prompt.html', {'post': post})
 
     if request.method == 'POST' and 'content' in request.POST:
         form = CommentForm(request.POST)
@@ -62,7 +66,6 @@ def post_new(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            form.save_m2m() 
             return redirect('post_detail', pk=post.pk)
         print('got POST but form is invalid')
         print(form.errors)
